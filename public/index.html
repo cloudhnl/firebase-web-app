@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YACC - Yet Another Chat Client</title>
+
+  <!-- update the version number as needed -->
+  <script defer src="/__/firebase/5.6.0/firebase-app.js"></script>
+  <!-- include only the Firebase features as you need -->
+  <script defer src="/__/firebase/5.6.0/firebase-auth.js"></script>
+  <script defer src="/__/firebase/5.6.0/firebase-database.js"></script>
+  <script defer src="/__/firebase/5.6.0/firebase-messaging.js"></script>
+  <script defer src="/__/firebase/5.6.0/firebase-storage.js"></script>
+  <!-- initialize the SDK after all desired features are loaded -->
+  <script defer src="/__/firebase/init.js"></script>
+
+  <link rel="stylesheet" href="styles/index.css">
+</head>
+
+<body>
+  <header>
+    <div id="user-pic"></div>
+    <div id="user-name"></div>
+    <button id="sign-in" hidden>Sign In With Google</button>
+    <button id="sign-out" hidden>Sign Out</button>
+  </header>
+  <div id="chat">
+    <div id="messages"></div>
+    <form id="message-form" hidden>
+      <input id="message-input" type="text"></input>
+      <button id="send" type="submit" disabled>Send</button>
+    </form>
+  </div>
+  <p id="load">Firebase SDK Loading&hellip;</p>
+
+  <script src="scripts/index.js"></script>
+</body>
+
+</html>
