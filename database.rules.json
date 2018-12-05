@@ -6,9 +6,13 @@
       "$messageId": {
         ".validate": "newData.child('name').val() === auth.token.name",
         "text": {
-          "validate": "newData.isString() && newData.val().length < 300"
+          ".validate": "newData.isString() && newData.val().length < 300"
         }
       }
+    },
+    "deviceTokens": {
+      ".read": true,
+      ".write": "auth != null"
     }
   }
 }

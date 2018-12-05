@@ -40,6 +40,8 @@ document.addEventListener('DOMContentLoaded', function () {
         signOutElement.removeAttribute('hidden');
         messageFormElement.removeAttribute('hidden');
         imageFormElement.removeAttribute('hidden');
+
+        saveDeviceToken();
       } else {
         userPicElement.setAttribute('hidden', true);
         userNameElement.setAttribute('hidden', true);
@@ -73,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const imageUrl = snap.val().imageUrl;
       if (text) {
         messageElement.textContent = text;
-      } else if(imageUrl) {
+      } else if (imageUrl) {
         const img = document.createElement('img');
         img.src = imageUrl;
         messageElement.appendChild(img);
@@ -103,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }).then(function () {
           messageInputElement.value = '';
         }).catch(function (error) {
-          console.log(error);
+          console.error(error);
         });
       }
     });
@@ -120,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // uploading images
-    imageButtonElement.addEventListener('click', function(e) {
+    imageButtonElement.addEventListener('click', function (e) {
       e.preventDefault();
       imageInputElement.click();
     });
@@ -138,7 +140,6 @@ document.addEventListener('DOMContentLoaded', function () {
           profilePicUrl: firebase.auth().currentUser.photoURL
         }).then(function (ref) {
           const path = firebase.auth().currentUser.uid + '/' + ref.key + '/' + file.name;
-          console.log(path);
           return firebase.storage().ref(path).put(file).then(function (snap) {
             return snap.ref.getDownloadURL().then(function (url) {
               return ref.update({
@@ -148,14 +149,34 @@ document.addEventListener('DOMContentLoaded', function () {
             });
           });
         }).catch(function (error) {
-          console.log(error);
+          console.error(error);
         });
       }
     });
+
+    function saveDeviceToken() {
+      firebase.messaging().getToken().then(function (token) {
+        if (token) {
+          console.log('FCM device token:', token);
+          firebase.database().ref('deviceTokens').child(token).set(firebase.auth().currentUser.uid);
+        } else {
+          requestNotificationsPermissions();
+        }
+      }).catch(function (error) {
+        console.error(error);
+      });
+    }
+
+    function requestNotificationsPermissions() {
+      firebase.messaging().requestPermission().then(function () {
+        saveDeviceToken();
+      }).catch(function (error) {
+        console.error(error);
+      })
+    }
 
   } catch (e) {
     console.error(e);
     document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
   }
 });
-
