@@ -26,6 +26,10 @@ body {
   height: 30px;
 }
 
+#image-input {
+  display: none;
+}
+
 #load { 
   color: rgba(0,0,0,0.4); 
   text-align: center; 

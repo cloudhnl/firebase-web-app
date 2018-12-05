@@ -17,6 +17,9 @@ document.addEventListener('DOMContentLoaded', function () {
   const messageFormElement = document.getElementById('message-form');
   const messageInputElement = document.getElementById('message-input');
   const sendElement = document.getElementById('send');
+  const imageFormElement = document.getElementById('image-form');
+  const imageInputElement = document.getElementById('image-input');
+  const imageButtonElement = document.getElementById('upload');
 
   try {
     let app = firebase.app();
@@ -36,12 +39,14 @@ document.addEventListener('DOMContentLoaded', function () {
         signInElement.setAttribute('hidden', true);
         signOutElement.removeAttribute('hidden');
         messageFormElement.removeAttribute('hidden');
+        imageFormElement.removeAttribute('hidden');
       } else {
         userPicElement.setAttribute('hidden', true);
         userNameElement.setAttribute('hidden', true);
         signInElement.removeAttribute('hidden');
         signOutElement.setAttribute('hidden', true);
         messageFormElement.setAttribute('hidden', true);
+        imageFormElement.setAttribute('hidden', true);
       }
     });
 
@@ -65,10 +70,14 @@ document.addEventListener('DOMContentLoaded', function () {
       div.querySelector('.name').textContent = snap.val().name;
       let messageElement = div.querySelector('.message');
       const text = snap.val().text;
+      const imageUrl = snap.val().imageUrl;
       if (text) {
         messageElement.textContent = text;
+      } else if(imageUrl) {
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        messageElement.appendChild(img);
       }
-      // TO DO load photos
     }
 
     firebase.database().ref('messages').limitToLast(10).on('child_added', messagesCallback);
@@ -83,14 +92,16 @@ document.addEventListener('DOMContentLoaded', function () {
       firebase.auth().signOut();
     });
 
-    // TODO add placeholder image
     messageFormElement.addEventListener('submit', function (e) {
       e.preventDefault();
       if (messageInputElement.value && !!firebase.auth().currentUser) {
         firebase.database().ref('messages').push({
           name: firebase.auth().currentUser.displayName,
           text: messageInputElement.value,
+          // TODO add placeholder image for profile pic
           profilePicUrl: firebase.auth().currentUser.photoURL
+        }).then(function () {
+          messageInputElement.value = '';
         }).catch(function (error) {
           console.log(error);
         });
@@ -107,6 +118,41 @@ document.addEventListener('DOMContentLoaded', function () {
         sendElement.setAttribute('disabled', true);
       }
     }
+
+    // uploading images
+    imageButtonElement.addEventListener('click', function(e) {
+      e.preventDefault();
+      imageInputElement.click();
+    });
+
+    imageInputElement.addEventListener('change', function (e) {
+      e.preventDefault();
+      const file = e.target.files[0];
+
+      imageFormElement.reset();
+
+      if (!!firebase.auth().currentUser) {
+        firebase.database().ref('messages').push({
+          name: firebase.auth().currentUser.displayName,
+          // TODO add placeholder image for profile pic
+          profilePicUrl: firebase.auth().currentUser.photoURL
+        }).then(function (ref) {
+          const path = firebase.auth().currentUser.uid + '/' + ref.key + '/' + file.name;
+          console.log(path);
+          return firebase.storage().ref(path).put(file).then(function (snap) {
+            return snap.ref.getDownloadURL().then(function (url) {
+              return ref.update({
+                imageUrl: url,
+                storageUri: snap.metadata.fullPath
+              });
+            });
+          });
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }
+    });
+
   } catch (e) {
     console.error(e);
     document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
