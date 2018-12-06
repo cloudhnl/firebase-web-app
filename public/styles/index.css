@@ -24,11 +24,18 @@ header {
 
 #user-name {
   padding-left: 90px;
-  padding-top: 10px;
+  font-weight: bold;
 }
 
 #sign-in, #sign-out {
   margin-left: 30px;
+  margin-top: 5px;
+  border-radius: 5px;
+  padding: 8px 25px;
+  background: white;
+  border: none;
+  color: black;
+  text-transform: uppercase;
 }
 
 #chat {
@@ -80,6 +87,8 @@ header {
 .message {
   float: right;
 }
+
+.message img{max-width: 250px;}
 
 #message-input {
   padding:8px;
