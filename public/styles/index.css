@@ -98,8 +98,8 @@ h1 {
 }
 
 .message img {
-  max-height: 200px; 
-  max-width: 250px;
+  max-height: 300px; 
+  max-width: 300px;
 }
 
 #message-input {
