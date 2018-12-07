@@ -59,9 +59,13 @@ document.addEventListener('DOMContentLoaded', function () {
         div = document.createElement('div');
         div.className = 'message-container';
         div.id = snap.key;
-        div.innerHTML = '<div class="pic"></div>' +
-          '<div class="message"></div>' +
-          '<div class="name"></div>';
+        div.innerHTML = `
+        <div class="message-user-info">
+          <div class="pic"></div>
+          <div class="name"></div>
+        </div>
+        <div class="message">
+        </div>`;
         messagesElement.appendChild(div);
       }
       const picUrl = snap.val().profilePicUrl;

@@ -23,12 +23,17 @@
 
 <body>
   <header>
-    <div id="user-pic"></div>
-    <div id="user-name"></div>
-    <button id="sign-in" hidden>Sign In With Google</button>
-    <button id="sign-out" hidden>Sign Out</button>
+    <h1>Yet Another Chat Client</h1>
+    <div class="user-container">
+      <div id="user-pic"></div>
+      <div class="user-info">
+        <div id="user-name"></div>
+        <button id="sign-in" hidden>Sign In With Google</button>
+        <button id="sign-out" hidden>Sign Out</button>
+      </div>
+    </div>
   </header>
-  <div id="chat">
+  <div id="chat" class="clearfix">
     <div id="messages"></div>
     <form id="message-form" hidden>
       <input id="message-input" type="text"></input>
@@ -36,10 +41,7 @@
     </form>
     <form id="image-form" hidden>
       <input id="image-input" type="file" accept="image/*">
-      <button id="upload">
-        Upload
-      <!-- replace with icon -->
-      </button>
+      <button id="upload">Upload</button>
     </form>
   </div>
   <p id="load">Firebase SDK Loading&hellip;</p>

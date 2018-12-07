@@ -13,7 +13,7 @@ admin.initializeApp();
 exports.welcomeMessage = functions.auth.user().onCreate(async (user) => {
   await admin.database().ref('messages').push({
     name: 'Welcome Bot',
-    profilePicUrl: null,
+    profilePicUrl: 'https://firebase.google.com/downloads/brand-guidelines/SVG/logo-logomark.svg',
     text: `Welcome ${user.displayName}!`
   });
 });
@@ -53,22 +53,3 @@ exports.sendNotifications = functions.database.ref('messages/{messageId}').onCre
     }
   }
 )
-
-// Cleans up the tokens that are no longer valid.
-function cleanupTokens(response, tokens) {
-  // For each notification we check if there was an error.
-  const tokensToRemove = {};
-  response.results.forEach((result, index) => {
-    const error = result.error;
-    if (error) {
-      // Cleanup the tokens who are not registered anymore.
-      if (error.code === 'messaging/invalid-registration-token' ||
-        error.code === 'messaging/registration-token-not-registered') {
-        tokensToRemove[`/fcmTokens/${tokens[index]}`] = null;
-      } else {
-        console.error('Failure sending notification to', tokens[index], error);
-      }
-    }
-  });
-  return admin.database().ref().update(tokensToRemove);
-}
